@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Send, Hash, Users, ChevronLeft, Info, Loader2 } from 'lucide-react';
+import { Send, Hash, Users, ChevronLeft, Info, Loader2, LogOut } from 'lucide-react';
 import { useChat } from '../hooks/useChat';
 import { useChatStore } from '../store/useChatStore';
 import { useRoomStore } from '../store/useRoomStore';
+import { useRooms } from '../hooks/useRooms';
 import { roomsApi, messagesApi } from '../services/api';
 import { MessageItem } from '../components/MessageItem';
 import { TypingIndicator } from '../components/TypingIndicator';
@@ -14,12 +15,14 @@ export const ChatRoomPage: React.FC = () => {
   const navigate = useNavigate();
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [isLeaving, setIsLeaving] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   
   const { currentRoom, setCurrentRoom } = useRoomStore();
   const { messages: allMessages, typingUsers: allTypingUsers } = useChatStore();
   const { sendMessage, startTyping, stopTyping } = useChat(id);
+  const { leaveRoom } = useRooms();
   
   const messages = allMessages[id!] || [];
   const typingUsers = allTypingUsers[id!] || [];
@@ -78,6 +81,19 @@ export const ChatRoomPage: React.FC = () => {
     }, 2000);
   };
 
+  const handleLeave = async () => {
+    if (!id || !window.confirm('Are you sure you want to leave this room?')) return;
+    setIsLeaving(true);
+    try {
+      await leaveRoom(id);
+      navigate('/');
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLeaving(false);
+    }
+  };
+
   const loadMore = async () => {
     if (!id || !hasMore) return;
     const nextPage = page + 1;
@@ -126,9 +142,20 @@ export const ChatRoomPage: React.FC = () => {
             </div>
           </div>
         </div>
-        <button className="p-2 hover:bg-slate-700 rounded-lg text-slate-400 transition-colors">
-          <Info size={20} />
-        </button>
+        
+        <div className="flex items-center gap-2">
+          <button 
+            onClick={handleLeave}
+            disabled={isLeaving}
+            className="flex items-center gap-2 px-3 py-1.5 text-xs font-bold text-rose-400 hover:bg-rose-400/10 rounded-lg transition-all border border-rose-400/20"
+          >
+            {isLeaving ? <Loader2 className="animate-spin" size={14} /> : <LogOut size={14} />}
+            Leave Room
+          </button>
+          <button className="p-2 hover:bg-slate-700 rounded-lg text-slate-400 transition-colors">
+            <Info size={20} />
+          </button>
+        </div>
       </header>
 
       <div 

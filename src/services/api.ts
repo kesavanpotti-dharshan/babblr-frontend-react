@@ -44,6 +44,9 @@ export const roomsApi = {
   getRooms: () => api.get<Room[]>('/api/rooms'),
   getRoom: (id: string) => api.get<Room>(`/api/rooms/${id}`),
   createRoom: (data: any) => api.post<Room>('/api/rooms', data),
+  discoverRooms: () => api.get<Room[]>('/api/rooms/discover'),
+  joinRoom: (id: string) => api.post(`/api/rooms/${id}/join`),
+  leaveRoom: (id: string) => api.post(`/api/rooms/${id}/leave`),
 };
 
 export const messagesApi = {
