@@ -1,20 +1,54 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Babblr — Frontend
 
-# Run and deploy your AI Studio app
+React 18 frontend for [Babblr](https://github.com/kesavanpotti-dharshan/babblr-backend-dotnet), 
+a real-time messaging application built with ASP.NET Core 8 and SignalR.
 
-This contains everything you need to run your app locally.
+## Tech Stack
 
-View your app in AI Studio: https://ai.studio/apps/c1639582-6ae7-44cd-9f1e-10cf09d6fa33
+- React 18 + TypeScript
+- Vite
+- Tailwind CSS
+- @microsoft/signalr — real-time WebSocket connection
+- Axios — REST API calls
+- React Router v6
+- Zustand — state management
 
-## Run Locally
+## Features
 
-**Prerequisites:**  Node.js
+- JWT authentication (register and login)
+- Real-time messaging via SignalR
+- Room creation and management
+- Message history with pagination
+- Edit and delete messages
+- Typing indicators
+- Online presence tracking
 
+## Getting Started
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+### Prerequisites
+- Node.js 18+
+- Babblr backend API running
+
+### Setup
+```bash
+# Install dependencies
+npm install
+
+# Copy environment variables
+cp .env.example .env
+
+# Update .env with your backend URL
+VITE_API_URL=https://your-backend.azurewebsites.net
+
+# Start dev server
+npm run dev
+```
+
+## Backend
+
+The backend API repository is at:  
+[babblr-backend-dotnet](https://github.com/kesavanpotti-dharshan/babblr-backend-dotnet)
+
+## Author
+
+**Dharshan** — [GitHub](https://github.com/kesavanpotti-dharshan)
