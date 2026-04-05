@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Send, Hash, Users, ChevronLeft, Info, Loader2, LogOut } from 'lucide-react';
+import { Send, Hash, Users, ChevronLeft, Info, Loader2, LogOut, Menu } from 'lucide-react';
 import { useChat } from '../hooks/useChat';
 import { useChatStore } from '../store/useChatStore';
 import { useRoomStore } from '../store/useRoomStore';
 import { useRooms } from '../hooks/useRooms';
+import { useUIStore } from '../store/useUIStore';
 import { roomsApi, messagesApi } from '../services/api';
 import { MessageItem } from '../components/MessageItem';
 import { TypingIndicator } from '../components/TypingIndicator';
@@ -23,6 +24,7 @@ export const ChatRoomPage: React.FC = () => {
   const { messages: allMessages, typingUsers: allTypingUsers } = useChatStore();
   const { sendMessage, startTyping, stopTyping } = useChat(id);
   const { leaveRoom } = useRooms();
+  const { openSidebar } = useUIStore();
   
   const messages = allMessages[id!] || [];
   const typingUsers = allTypingUsers[id!] || [];
@@ -118,42 +120,42 @@ export const ChatRoomPage: React.FC = () => {
   return (
     <div className="flex-1 flex flex-col h-full bg-[#0f172a] relative">
       <header className="h-16 border-b border-slate-700/50 bg-[#1e293b]/50 backdrop-blur-md flex items-center justify-between px-4 z-10">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 md:gap-4">
           <button
-            onClick={() => navigate('/')}
-            className="p-2 hover:bg-slate-700 rounded-lg text-slate-400 transition-colors md:hidden"
+            onClick={openSidebar}
+            className="p-2 hover:bg-slate-700 rounded-lg text-slate-400 transition-colors lg:hidden"
           >
-            <ChevronLeft size={20} />
+            <Menu size={20} />
           </button>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400">
-              <Hash size={20} />
+          <div className="flex items-center gap-2 md:gap-3">
+            <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400">
+              <Hash size={18} className="md:size-20" />
             </div>
-            <div>
-              <h2 className="text-white font-bold leading-tight">{currentRoom?.name}</h2>
-              <div className="flex items-center gap-2 text-[10px] text-slate-500 font-medium uppercase tracking-wider">
+            <div className="min-w-0">
+              <h2 className="text-white font-bold leading-tight truncate text-sm md:text-base">{currentRoom?.name}</h2>
+              <div className="flex items-center gap-2 text-[9px] md:text-[10px] text-slate-500 font-medium uppercase tracking-wider">
                 <span className="flex items-center gap-1">
                   <Users size={10} />
                   {currentRoom?.memberCount} members
                 </span>
-                <span>•</span>
-                <span className="text-emerald-500">Active</span>
+                <span className="hidden xs:inline">•</span>
+                <span className="text-emerald-500 hidden xs:inline">Active</span>
               </div>
             </div>
           </div>
         </div>
         
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 md:gap-2">
           <button 
             onClick={handleLeave}
             disabled={isLeaving}
-            className="flex items-center gap-2 px-3 py-1.5 text-xs font-bold text-rose-400 hover:bg-rose-400/10 rounded-lg transition-all border border-rose-400/20"
+            className="flex items-center gap-2 px-2 md:px-3 py-1.5 text-[10px] md:text-xs font-bold text-rose-400 hover:bg-rose-400/10 rounded-lg transition-all border border-rose-400/20"
           >
-            {isLeaving ? <Loader2 className="animate-spin" size={14} /> : <LogOut size={14} />}
-            Leave Room
+            {isLeaving ? <Loader2 className="animate-spin" size={12} /> : <LogOut size={12} />}
+            <span className="hidden sm:inline">Leave Room</span>
           </button>
           <button className="p-2 hover:bg-slate-700 rounded-lg text-slate-400 transition-colors">
-            <Info size={20} />
+            <Info size={18} />
           </button>
         </div>
       </header>

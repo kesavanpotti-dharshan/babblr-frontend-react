@@ -59,20 +59,31 @@ export const DiscoverRoomsModal: React.FC<Props> = ({ isOpen, onClose }) => {
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="absolute inset-0 bg-slate-950/80 backdrop-blur-md"
+          />
+          
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="bg-[#1e293b] w-full max-w-2xl rounded-2xl shadow-2xl border border-slate-700 overflow-hidden flex flex-col max-h-[80vh]"
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            className="bg-[#1e293b] w-full max-w-2xl rounded-3xl shadow-2xl border border-slate-700/50 overflow-hidden flex flex-col max-h-[85vh] relative z-10"
           >
-            <div className="p-6 border-b border-slate-700 flex items-center justify-between bg-[#1e293b]">
+            <div className="p-6 border-b border-slate-700/50 flex items-center justify-between bg-gradient-to-r from-indigo-500/10 to-transparent">
               <div>
-                <h2 className="text-xl font-bold text-white">Discover Rooms</h2>
-                <p className="text-xs text-slate-400 mt-1">Explore public rooms and join the conversation</p>
+                <h2 className="text-xl font-bold text-white leading-tight">Discover Communities</h2>
+                <p className="text-xs text-slate-400 font-medium uppercase tracking-wider mt-1">Explore public rooms and join the conversation</p>
               </div>
-              <button onClick={onClose} className="text-slate-400 hover:text-white transition-colors p-2 hover:bg-slate-800 rounded-full">
-                <X size={24} />
+              <button 
+                onClick={onClose} 
+                className="p-2 text-slate-400 hover:text-white hover:bg-slate-700/50 rounded-xl transition-all"
+              >
+                <X size={20} />
               </button>
             </div>
 
@@ -89,61 +100,62 @@ export const DiscoverRoomsModal: React.FC<Props> = ({ isOpen, onClose }) => {
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-4 space-y-3 custom-scrollbar">
+            <div className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
               {isLoading ? (
-                <div className="flex flex-col items-center justify-center py-20 text-slate-500 gap-3">
-                  <Loader2 className="animate-spin" size={32} />
-                  <p className="text-sm font-medium">Finding rooms...</p>
+                <div className="flex flex-col items-center justify-center py-24 text-slate-500 gap-4">
+                  <Loader2 className="animate-spin text-indigo-500" size={40} />
+                  <p className="text-sm font-bold uppercase tracking-widest">Finding communities...</p>
                 </div>
               ) : filteredRooms.length > 0 ? (
                 filteredRooms.map((room) => (
                   <div
                     key={room.id}
-                    className="flex items-center justify-between p-4 bg-[#0f172a] rounded-xl border border-slate-700 hover:border-slate-600 transition-all group"
+                    className="flex items-center justify-between p-5 bg-[#0f172a] rounded-2xl border border-slate-700/50 hover:border-indigo-500/30 transition-all group"
                   >
-                    <div className="flex items-center gap-4 flex-1 min-w-0">
-                      <div className="w-12 h-12 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 group-hover:bg-indigo-500 group-hover:text-white transition-all">
-                        <Hash size={24} />
+                    <div className="flex items-center gap-5 flex-1 min-w-0">
+                      <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 group-hover:bg-indigo-500 group-hover:text-white transition-all shadow-inner">
+                        <Hash size={28} />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-white font-bold truncate">{room.name}</h3>
-                        <p className="text-xs text-slate-400 line-clamp-1">{room.description || 'No description'}</p>
-                        <div className="flex items-center gap-2 mt-1">
-                          <span className="flex items-center gap-1 text-[10px] text-slate-500 font-bold uppercase tracking-wider">
-                            <Users size={10} />
+                        <h3 className="text-lg font-bold text-white truncate group-hover:text-indigo-400 transition-colors">{room.name}</h3>
+                        <p className="text-sm text-slate-400 line-clamp-1 font-medium">{room.description || 'No description provided'}</p>
+                        <div className="flex items-center gap-3 mt-2">
+                          <span className="flex items-center gap-1.5 text-[10px] text-slate-500 font-bold uppercase tracking-widest bg-slate-800/50 px-2 py-0.5 rounded-full">
+                            <Users size={12} />
                             {room.memberCount} members
                           </span>
                         </div>
                       </div>
                     </div>
                     
-                    <div className="ml-4">
+                    <div className="ml-6">
                       {isJoined(room.id) ? (
                         <button
                           onClick={() => {
                             onClose();
                             navigate(`/rooms/${room.id}`);
                           }}
-                          className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg text-sm font-bold transition-all"
+                          className="flex items-center gap-2 px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-sm font-bold transition-all border border-slate-700"
                         >
                           Open
-                          <ArrowRight size={14} />
+                          <ArrowRight size={16} />
                         </button>
                       ) : (
                         <button
                           onClick={() => handleJoin(room.id)}
                           disabled={joiningId === room.id}
-                          className="flex items-center gap-2 px-6 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-lg text-sm font-bold transition-all shadow-lg shadow-indigo-500/20"
+                          className="flex items-center gap-2 px-8 py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-xl text-sm font-bold transition-all shadow-xl shadow-indigo-500/20"
                         >
-                          {joiningId === room.id ? <Loader2 className="animate-spin" size={16} /> : 'Join'}
+                          {joiningId === room.id ? <Loader2 className="animate-spin" size={18} /> : 'Join'}
                         </button>
                       )}
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="text-center py-20">
-                  <p className="text-slate-500">No rooms found matching your search.</p>
+                <div className="text-center py-24 bg-slate-900/30 rounded-3xl border border-dashed border-slate-800">
+                  <p className="text-slate-500 font-bold uppercase tracking-widest text-sm">No communities found</p>
+                  <p className="text-xs text-slate-600 mt-1">Try a different search term</p>
                 </div>
               )}
             </div>

@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Hash, Plus, LogOut, Users, Search } from 'lucide-react';
+import { Hash, Plus, LogOut, Users, Search, X } from 'lucide-react';
 import { useRoomStore } from '../store/useRoomStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { useChatStore } from '../store/useChatStore';
+import { useUIStore } from '../store/useUIStore';
 import { CreateRoomModal } from './CreateRoomModal';
 import { DiscoverRoomsModal } from './DiscoverRoomsModal';
 import { cn } from '../lib/utils';
@@ -12,24 +13,34 @@ export const Sidebar: React.FC = () => {
   const { rooms } = useRoomStore();
   const { user, logout } = useAuthStore();
   const { onlineUsers } = useChatStore();
+  const { isSidebarOpen, closeSidebar, setCreateRoomModalOpen, setDiscoverRoomsModalOpen } = useUIStore();
   const { id: currentRoomId } = useParams();
   const navigate = useNavigate();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDiscoverOpen, setIsDiscoverOpen] = useState(false);
 
   return (
-    <div className="w-64 bg-[#1e293b] flex flex-col border-r border-slate-700/50">
+    <div className={cn(
+      "fixed inset-y-0 left-0 z-50 w-72 bg-[#1e293b] flex flex-col border-r border-slate-700/50 transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 lg:w-64",
+      isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+    )}>
       <div className="p-4 border-b border-slate-700/50 flex items-center justify-between">
         <h1 className="text-xl font-bold text-white tracking-tight">Babblr</h1>
-        <div className="flex items-center gap-2 text-xs text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-full">
-          <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
-          <span>{onlineUsers.size} online</span>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 text-xs text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-full">
+            <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
+            <span>{onlineUsers.size} online</span>
+          </div>
+          <button 
+            onClick={closeSidebar}
+            className="p-1 text-slate-400 hover:text-white lg:hidden"
+          >
+            <X size={20} />
+          </button>
         </div>
       </div>
 
       <div className="flex-1 overflow-y-auto p-2 space-y-1 custom-scrollbar">
         <button
-          onClick={() => setIsDiscoverOpen(true)}
+          onClick={() => setDiscoverRoomsModalOpen(true)}
           className="w-full flex items-center gap-3 px-3 py-2 rounded-lg transition-all text-slate-400 hover:bg-slate-700/50 hover:text-slate-200 mb-4 group"
         >
           <div className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center text-slate-500 group-hover:bg-indigo-500 group-hover:text-white transition-all">
@@ -41,7 +52,7 @@ export const Sidebar: React.FC = () => {
         <div className="px-2 py-2 flex items-center justify-between text-xs font-semibold text-slate-400 uppercase tracking-wider">
           <span>Your Rooms</span>
           <button
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => setCreateRoomModalOpen(true)}
             className="p-1 hover:bg-slate-700 rounded-md transition-colors text-slate-300"
           >
             <Plus size={16} />
@@ -87,9 +98,6 @@ export const Sidebar: React.FC = () => {
           Logout
         </button>
       </div>
-
-      <CreateRoomModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-      <DiscoverRoomsModal isOpen={isDiscoverOpen} onClose={() => setIsDiscoverOpen(false)} />
     </div>
   );
 };

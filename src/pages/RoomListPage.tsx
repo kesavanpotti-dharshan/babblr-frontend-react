@@ -1,22 +1,40 @@
 import React from 'react';
-import { MessageSquare, Hash, Users, ArrowRight } from 'lucide-react';
+import { MessageSquare, Hash, Users, ArrowRight, Menu } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useRoomStore } from '../store/useRoomStore';
 import { useRooms } from '../hooks/useRooms';
+import { useUIStore } from '../store/useUIStore';
 
 export const RoomListPage: React.FC = () => {
   const { rooms } = useRooms();
   const navigate = useNavigate();
+  const { openSidebar } = useUIStore();
 
   return (
-    <div className="flex-1 flex flex-col bg-[#0f172a]">
-      <div className="p-8 max-w-5xl mx-auto w-full">
-        <div className="mb-10">
-          <h1 className="text-4xl font-bold text-white mb-2 tracking-tight">Welcome back!</h1>
-          <p className="text-slate-400 text-lg">Select a room to start chatting or create a new one.</p>
-        </div>
+    <div className="flex-1 flex flex-col bg-[#0f172a] overflow-hidden">
+      {/* Mobile Header */}
+      <header className="lg:hidden h-16 border-b border-slate-700/50 bg-[#1e293b]/50 backdrop-blur-md flex items-center px-4 shrink-0 z-10">
+        <button
+          onClick={openSidebar}
+          className="p-2 hover:bg-slate-700 rounded-lg text-slate-400 transition-colors"
+        >
+          <Menu size={20} />
+        </button>
+        <h1 className="ml-4 text-lg font-bold text-white">Babblr</h1>
+      </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="flex-1 overflow-y-auto custom-scrollbar">
+        <div className="p-4 sm:p-6 md:p-10 max-w-6xl mx-auto w-full">
+          <div className="mb-8 md:mb-12">
+            <h1 className="text-3xl md:text-5xl font-bold text-white mb-3 tracking-tight">
+              Welcome back!
+            </h1>
+            <p className="text-slate-400 text-base md:text-xl max-w-2xl">
+              Select a room to start chatting or explore new communities to join.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {rooms.map((room) => (
             <button
               key={room.id}
@@ -62,6 +80,7 @@ export const RoomListPage: React.FC = () => {
               <p className="text-slate-400">Create your first room to get started!</p>
             </div>
           )}
+          </div>
         </div>
       </div>
     </div>
