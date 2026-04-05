@@ -1,0 +1,5 @@
+{
+  "name": "Babblr",
+  "description": "A real-time chat application built with React, SignalR, and Tailwind CSS.",
+  "requestFramePermissions": []
+}
