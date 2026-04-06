@@ -34,9 +34,9 @@ export const Toast: React.FC<Props> = ({
   };
 
   const bgColors = {
-    success: "bg-emerald-500/10 border-emerald-500/20",
-    error: "bg-rose-500/10 border-rose-500/20",
-    info: "bg-indigo-500/10 border-indigo-500/20",
+    success: "bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/20",
+    error: "bg-rose-50 dark:bg-rose-500/10 border-rose-200 dark:border-rose-500/20",
+    info: "bg-indigo-50 dark:bg-indigo-500/10 border-indigo-200 dark:border-indigo-500/20",
   };
 
   return (
@@ -47,17 +47,17 @@ export const Toast: React.FC<Props> = ({
           animate={{ opacity: 1, y: 0, x: '-50%' }}
           exit={{ opacity: 0, y: 20, x: '-50%' }}
           className={cn(
-            "fixed bottom-8 left-1/2 z-[200] flex items-center gap-3 px-4 py-3 rounded-2xl border backdrop-blur-md shadow-2xl min-w-[320px] max-w-md",
+            "fixed bottom-8 left-1/2 z-[200] flex items-center gap-3 px-4 py-3 rounded-2xl border backdrop-blur-md shadow-2xl min-w-[320px] max-w-md transition-colors duration-200",
             bgColors[type]
           )}
         >
           <div className="flex-shrink-0">{icons[type]}</div>
-          <p className="flex-1 text-sm font-medium text-white leading-tight">
+          <p className="flex-1 text-sm font-medium text-gray-900 dark:text-white leading-tight transition-colors duration-200">
             {message}
           </p>
           <button
             onClick={onClose}
-            className="p-1 text-slate-500 hover:text-white transition-colors"
+            className="p-1 text-gray-400 dark:text-slate-500 hover:text-gray-900 dark:hover:text-white transition-colors"
           >
             <X size={16} />
           </button>

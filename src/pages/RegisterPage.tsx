@@ -15,17 +15,17 @@ export const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0f172a] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-violet-50 to-indigo-100 dark:bg-[#0f172a] flex items-center justify-center p-4 transition-colors duration-200">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-600 text-white shadow-xl shadow-indigo-500/20 mb-4">
             <MessageSquare size={32} />
           </div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">Join Babblr</h1>
-          <p className="text-slate-400 mt-2">Create your account to start chatting</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Join Babblr</h1>
+          <p className="text-gray-500 dark:text-slate-400 mt-2">Create your account to start chatting</p>
         </div>
 
-        <div className="bg-[#1e293b] rounded-2xl shadow-2xl border border-slate-700/50 p-8">
+        <div className="bg-white dark:bg-[#1e293b] rounded-2xl shadow-sm dark:shadow-2xl border border-gray-200 dark:border-slate-700/50 p-8 transition-colors duration-200">
           <form onSubmit={handleSubmit} className="space-y-5">
             {error && (
               <div className="bg-rose-500/10 border border-rose-500/20 text-rose-400 px-4 py-3 rounded-xl text-sm">
@@ -34,45 +34,45 @@ export const RegisterPage: React.FC = () => {
             )}
 
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">Display Name</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1.5">Display Name</label>
               <div className="relative">
-                <User className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                <User className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500" size={18} />
                 <input
                   type="text"
                   required
                   value={displayName}
                   onChange={(e) => setDisplayName(e.target.value)}
-                  className="w-full bg-[#0f172a] border border-slate-700 rounded-xl pl-11 pr-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                  className="w-full bg-gray-50 dark:bg-[#0f172a] border border-gray-200 dark:border-slate-700 rounded-xl pl-11 pr-4 py-2.5 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
                   placeholder="Your Name"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">Email Address</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1.5">Email Address</label>
               <div className="relative">
-                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500" size={18} />
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full bg-[#0f172a] border border-slate-700 rounded-xl pl-11 pr-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                  className="w-full bg-gray-50 dark:bg-[#0f172a] border border-gray-200 dark:border-slate-700 rounded-xl pl-11 pr-4 py-2.5 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
                   placeholder="name@example.com"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-300 mb-1.5">Password</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1.5">Password</label>
               <div className="relative">
-                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+                <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500" size={18} />
                 <input
                   type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full bg-[#0f172a] border border-slate-700 rounded-xl pl-11 pr-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                  className="w-full bg-gray-50 dark:bg-[#0f172a] border border-gray-200 dark:border-slate-700 rounded-xl pl-11 pr-4 py-2.5 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
                   placeholder="••••••••"
                 />
               </div>
@@ -88,9 +88,9 @@ export const RegisterPage: React.FC = () => {
           </form>
 
           <div className="mt-8 text-center">
-            <p className="text-slate-400 text-sm">
+            <p className="text-gray-500 dark:text-slate-400 text-sm">
               Already have an account?{' '}
-              <Link to="/login" className="text-indigo-400 hover:text-indigo-300 font-semibold transition-colors">
+              <Link to="/login" className="text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 font-semibold transition-colors">
                 Sign in
               </Link>
             </p>

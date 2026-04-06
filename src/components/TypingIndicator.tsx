@@ -19,12 +19,12 @@ export const TypingIndicator: React.FC<Props> = ({ typingUsers }) => {
     <motion.div
       initial={{ opacity: 0, y: 5 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex items-center gap-2 px-4 py-1 text-xs text-slate-400 italic"
+      className="flex items-center gap-2 px-4 py-1 text-xs text-gray-500 dark:text-slate-400 italic transition-colors duration-200"
     >
       <div className="flex gap-1">
-        <span className="w-1 h-1 bg-slate-500 rounded-full animate-bounce [animation-delay:-0.3s]" />
-        <span className="w-1 h-1 bg-slate-500 rounded-full animate-bounce [animation-delay:-0.15s]" />
-        <span className="w-1 h-1 bg-slate-500 rounded-full animate-bounce" />
+        <span className="w-1 h-1 bg-gray-400 dark:bg-slate-500 rounded-full animate-bounce [animation-delay:-0.3s]" />
+        <span className="w-1 h-1 bg-gray-400 dark:bg-slate-500 rounded-full animate-bounce [animation-delay:-0.15s]" />
+        <span className="w-1 h-1 bg-gray-400 dark:bg-slate-500 rounded-full animate-bounce" />
       </div>
       {text}
     </motion.div>

@@ -15,6 +15,8 @@ import { Message } from '../types';
 import { ConfirmModal } from '../components/ConfirmModal';
 import { Toast, ToastType } from '../components/Toast';
 
+import { ThemeToggle } from '../components/ThemeToggle';
+
 export const ChatRoomPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -224,36 +226,35 @@ export const ChatRoomPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-[#0f172a]">
+      <div className="flex-1 flex items-center justify-center bg-gray-50 dark:bg-[#0f172a] transition-colors duration-200">
         <Loader2 className="w-10 h-10 text-indigo-500 animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-[#0f172a] relative overflow-hidden">
-      <header className="h-16 border-b border-slate-700/50 bg-[#1e293b]/50 backdrop-blur-md flex items-center justify-between px-4 z-20">
-        <div className="flex items-center gap-2 md:gap-4">
+    <div className="flex-1 flex flex-col h-full bg-gray-50 dark:bg-[#0f172a] relative overflow-hidden transition-colors duration-200">
+      <header className="h-14 border-b border-gray-200 dark:border-white/5 bg-white dark:bg-[#1e293b]/50 backdrop-blur-xl flex items-center justify-between px-4 z-20 shrink-0 transition-colors duration-200">
+        <div className="flex items-center gap-3">
           <button
             onClick={openSidebar}
-            className="p-2 hover:bg-slate-700 rounded-lg text-slate-400 transition-colors lg:hidden"
+            className="p-2 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg text-gray-500 dark:text-slate-400 transition-colors lg:hidden"
           >
-            <Menu size={20} />
+            <Menu size={18} />
           </button>
-          <div className="flex items-center gap-2 md:gap-3">
-            <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400">
-              <Hash size={18} className="md:size-20" />
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-600 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/10">
+              <Hash size={16} />
             </div>
             <div className="min-w-0">
-              <h2 className="text-white font-bold leading-tight truncate text-sm md:text-base">{currentRoom?.name}</h2>
-              <div className="flex items-center gap-2 text-[9px] md:text-[10px] text-slate-500 font-medium uppercase tracking-wider">
-                <span className="flex items-center gap-1">
+              <h2 className="text-gray-900 dark:text-white font-semibold leading-tight truncate text-sm transition-colors duration-200">{currentRoom?.name}</h2>
+              <div className="flex items-center gap-2 mt-0.5">
+                <span className="flex items-center gap-1 bg-gray-100 dark:bg-white/5 rounded-full px-2 py-0.5 text-[10px] text-gray-500 dark:text-slate-400 font-bold transition-colors duration-200">
                   <Users size={10} />
-                  {currentRoom?.memberCount} members
+                  {currentRoom?.memberCount}
                 </span>
-                <span className="hidden xs:inline">•</span>
-                <span className="flex items-center gap-1 text-emerald-500">
-                  <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+                <span className="flex items-center gap-1 bg-emerald-500/10 rounded-full px-2 py-0.5 text-[10px] text-emerald-600 dark:text-emerald-500 font-bold transition-colors duration-200">
+                  <div className="w-1 h-1 bg-emerald-500 rounded-full animate-pulse" />
                   {onlineCount} online
                 </span>
               </div>
@@ -261,71 +262,73 @@ export const ChatRoomPage: React.FC = () => {
           </div>
         </div>
         
-        <div className="flex items-center gap-1 md:gap-2">
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
           <button 
             onClick={() => setIsSearching(!isSearching)}
             className={cn(
               "p-2 rounded-lg transition-all",
-              isSearching ? "bg-indigo-500 text-white" : "text-slate-400 hover:bg-slate-700"
+              isSearching ? "bg-violet-500 text-white shadow-lg shadow-violet-500/20" : "text-gray-500 dark:text-slate-400 hover:bg-gray-100 dark:hover:bg-white/5"
             )}
+            title="Search messages"
           >
             <Search size={18} />
           </button>
           <button 
             onClick={() => setIsLeaveModalOpen(true)}
             disabled={isLeaving}
-            className="flex items-center gap-2 px-2 md:px-3 py-1.5 text-[10px] md:text-xs font-bold text-rose-400 hover:bg-rose-400/10 rounded-lg transition-all border border-rose-400/20"
+            className="p-2 text-gray-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-400/10 rounded-lg transition-all group relative"
+            title="Leave Room"
           >
-            {isLeaving ? <Loader2 className="animate-spin" size={12} /> : <LogOut size={12} />}
-            <span className="hidden sm:inline">Leave Room</span>
+            {isLeaving ? <Loader2 className="animate-spin" size={18} /> : <LogOut size={18} />}
           </button>
         </div>
       </header>
 
       {/* Search Bar */}
       {isSearching && (
-        <div className="absolute top-16 left-0 right-0 bg-[#1e293b] border-b border-slate-700 z-30 p-4 shadow-2xl animate-in slide-in-from-top duration-200">
+        <div className="absolute top-14 left-0 right-0 bg-white/95 dark:bg-[#1e293b]/95 backdrop-blur-xl border-b border-gray-200 dark:border-white/5 z-30 p-4 shadow-2xl animate-in slide-in-from-top duration-200 transition-colors duration-200">
           <div className="max-w-3xl mx-auto relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500" size={18} />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search messages..."
               autoFocus
-              className="w-full bg-[#0f172a] border border-slate-700 rounded-xl pl-10 pr-10 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all"
+              className="w-full bg-gray-50 dark:bg-[#0f172a]/50 border border-gray-200 dark:border-white/5 rounded-xl pl-11 pr-10 py-2.5 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-violet-500/50 transition-all"
               onKeyDown={(e) => e.key === 'Escape' && setIsSearching(false)}
             />
             <button 
               onClick={() => setIsSearching(false)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-white"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500 hover:text-gray-900 dark:hover:text-white"
             >
               <X size={18} />
             </button>
           </div>
           
           {searchQuery && (
-            <div className="max-w-3xl mx-auto mt-4 max-h-[40vh] overflow-y-auto custom-scrollbar bg-[#0f172a] rounded-xl border border-slate-700 divide-y divide-slate-800">
+            <div className="max-w-3xl mx-auto mt-4 max-h-[40vh] overflow-y-auto custom-scrollbar bg-gray-50 dark:bg-[#0f172a]/50 rounded-xl border border-gray-200 dark:border-white/5 divide-y divide-gray-200 dark:divide-white/5">
               {isSearchLoading ? (
                 <div className="p-8 flex justify-center">
-                  <Loader2 className="animate-spin text-indigo-500" size={24} />
+                  <Loader2 className="animate-spin text-violet-500" size={24} />
                 </div>
               ) : searchResults.length > 0 ? (
                 searchResults.map((res) => (
                   <button
                     key={res.messageId}
                     onClick={() => scrollToMessage(res.messageId)}
-                    className="w-full p-4 text-left hover:bg-slate-800/50 transition-colors flex flex-col gap-1"
+                    className="w-full p-4 text-left hover:bg-gray-100 dark:hover:bg-white/5 transition-colors flex flex-col gap-1"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-indigo-400">{res.senderName}</span>
-                      <span className="text-[10px] text-slate-500">{new Date(res.sentAt).toLocaleDateString()}</span>
+                      <span className="text-xs font-bold text-violet-600 dark:text-violet-400">{res.senderDisplayName || res.senderName}</span>
+                      <span className="text-[10px] text-gray-500 dark:text-slate-500 font-medium">{new Date(res.sentAt).toLocaleDateString()}</span>
                     </div>
-                    <p className="text-sm text-slate-300 line-clamp-2">{res.content}</p>
+                    <p className="text-sm text-gray-700 dark:text-slate-300 line-clamp-2 leading-relaxed">{res.content}</p>
                   </button>
                 ))
               ) : (
-                <div className="p-8 text-center text-slate-500 text-sm">
+                <div className="p-8 text-center text-gray-500 dark:text-slate-500 text-sm font-medium">
                   No messages found for "{searchQuery}"
                 </div>
               )}
@@ -336,45 +339,72 @@ export const ChatRoomPage: React.FC = () => {
 
       <div 
         ref={scrollRef}
-        className="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar scroll-smooth"
+        className="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar scroll-smooth relative"
       >
+        {messages.length === 0 && !isLoading && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none select-none">
+            <div className="text-gray-900/5 dark:text-white/5 text-8xl font-bold mb-2">#</div>
+            <div className="text-gray-900/10 dark:text-white/10 text-sm font-medium uppercase tracking-widest">
+              Welcome to {currentRoom?.name}
+            </div>
+          </div>
+        )}
+
         {hasMore && (
-          <div className="flex justify-center py-4">
+          <div className="flex justify-center py-6">
             <button
               onClick={loadMore}
-              className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 bg-indigo-500/5 px-4 py-2 rounded-full border border-indigo-500/20 transition-all"
+              className="text-[11px] font-bold text-slate-400 hover:text-white bg-white/5 px-4 py-2 rounded-full border border-white/5 transition-all uppercase tracking-widest"
             >
               Load previous messages
             </button>
           </div>
         )}
-        {messages.map((msg) => (
-          <div key={msg.messageId} id={`message-${msg.messageId}`}>
-            <MessageItem message={msg} roomId={id!} />
-          </div>
-        ))}
+        {messages.map((msg, index) => {
+          const prevMsg = messages[index - 1];
+          const nextMsg = messages[index + 1];
+          
+          const isFirstInGroup = !prevMsg || 
+            prevMsg.senderId !== msg.senderId || 
+            new Date(msg.sentAt).getTime() - new Date(prevMsg.sentAt).getTime() > 5 * 60 * 1000;
+          
+          const isLastInGroup = !nextMsg ||
+            nextMsg.senderId !== msg.senderId ||
+            new Date(nextMsg.sentAt).getTime() - new Date(msg.sentAt).getTime() > 5 * 60 * 1000;
+          
+          return (
+            <div key={msg.messageId} id={`message-${msg.messageId}`}>
+              <MessageItem 
+                message={msg} 
+                roomId={id!} 
+                isFirstInGroup={isFirstInGroup} 
+                isLastInGroup={isLastInGroup}
+              />
+            </div>
+          );
+        })}
         <div className="h-4" />
       </div>
 
-      <div className="p-4 bg-[#0f172a]">
+      <div className="px-4 py-4 bg-white dark:bg-gray-900/80 backdrop-blur-xl border-t border-gray-200 dark:border-white/10 transition-colors duration-200">
         <TypingIndicator typingUsers={typingUsers} />
         
         {isUploading && (
-          <div className="mb-2 px-4">
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">Uploading file...</span>
-              <span className="text-[10px] font-bold text-indigo-400">{uploadProgress}%</span>
+          <div className="mb-3 px-2">
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-[10px] font-bold text-violet-600 dark:text-violet-400 uppercase tracking-[0.2em]">Uploading file...</span>
+              <span className="text-[10px] font-bold text-violet-600 dark:text-violet-400">{uploadProgress}%</span>
             </div>
-            <div className="h-1 w-full bg-slate-800 rounded-full overflow-hidden">
+            <div className="h-1 w-full bg-gray-100 dark:bg-white/5 rounded-full overflow-hidden">
               <div 
-                className="h-full bg-indigo-500 transition-all duration-300" 
+                className="h-full bg-gradient-to-r from-violet-500 to-indigo-500 transition-all duration-300" 
                 style={{ width: `${uploadProgress}%` }}
               />
             </div>
           </div>
         )}
 
-        <form onSubmit={handleSend} className="relative mt-2">
+        <form onSubmit={handleSend} className="relative flex items-center gap-3">
           <input
             type="file"
             ref={fileInputRef}
@@ -382,28 +412,35 @@ export const ChatRoomPage: React.FC = () => {
             className="hidden"
             accept="image/*,application/pdf"
           />
-          <button
-            type="button"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={isUploading}
-            className="absolute left-2 top-1/2 -translate-y-1/2 p-2 text-slate-500 hover:text-indigo-400 transition-colors disabled:opacity-50"
-          >
-            <Paperclip size={20} />
-          </button>
-          <input
-            type="text"
-            value={message}
-            onChange={(e) => {
-              setMessage(e.target.value);
-              handleTyping();
-            }}
-            placeholder={`Message #${currentRoom?.name}`}
-            className="w-full bg-[#1e293b] border border-slate-700 rounded-2xl pl-12 pr-14 py-3.5 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all shadow-xl"
-          />
+          <div className="relative flex-1">
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isUploading}
+              className="absolute left-3 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 dark:text-slate-500 hover:text-violet-600 dark:hover:text-violet-400 transition-colors disabled:opacity-50"
+            >
+              <Paperclip size={20} />
+            </button>
+            <input
+              type="text"
+              value={message}
+              onChange={(e) => {
+                setMessage(e.target.value);
+                handleTyping();
+              }}
+              placeholder={`Message #${currentRoom?.name}`}
+              className="w-full h-12 bg-gray-50 dark:bg-[#0f172a]/50 border border-gray-200 dark:border-white/5 rounded-2xl pl-12 pr-4 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-violet-500/30 transition-all"
+            />
+          </div>
           <button
             type="submit"
             disabled={!message.trim() || isUploading}
-            className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-xl transition-all shadow-lg shadow-indigo-500/20"
+            className={cn(
+              "w-12 h-12 rounded-full flex items-center justify-center transition-all shadow-lg active:scale-95",
+              message.trim() && !isUploading
+                ? "bg-gradient-to-r from-violet-600 to-indigo-500 text-white shadow-indigo-500/20"
+                : "bg-gray-100 dark:bg-white/5 text-gray-300 dark:text-white/20 cursor-not-allowed"
+            )}
           >
             <Send size={20} />
           </button>

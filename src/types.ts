@@ -27,6 +27,7 @@ export interface Message {
   content: string;
   senderId: string;
   senderName: string;
+  senderDisplayName?: string;
   senderAvatarUrl?: string;
   roomId: string;
   sentAt: string;

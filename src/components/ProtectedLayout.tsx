@@ -32,7 +32,7 @@ export const ProtectedLayout: React.FC = () => {
   }
 
   return (
-    <div className="flex h-screen bg-[#0f172a] text-slate-200 overflow-hidden relative">
+    <div className="flex h-screen bg-gray-50 dark:bg-[#0f172a] text-gray-900 dark:text-slate-200 overflow-hidden relative transition-colors duration-200">
       {/* Mobile Backdrop */}
       <AnimatePresence>
         {isSidebarOpen && (
@@ -41,7 +41,7 @@ export const ProtectedLayout: React.FC = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={closeSidebar}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+            className="fixed inset-0 bg-gray-900/60 dark:bg-black/60 backdrop-blur-sm z-40 lg:hidden transition-colors duration-200"
           />
         )}
       </AnimatePresence>

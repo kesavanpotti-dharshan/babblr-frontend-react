@@ -11,6 +11,16 @@ export default function App() {
   const logout = useAuthStore((state) => state.logout);
 
   useEffect(() => {
+    const savedTheme = localStorage.getItem('babblr-theme') || 'dark';
+    const root = window.document.documentElement;
+    if (savedTheme === 'dark') {
+      root.classList.add('dark');
+      root.style.colorScheme = 'dark';
+    } else {
+      root.classList.remove('dark');
+      root.style.colorScheme = 'light';
+    }
+
     const handleUnauthorized = () => {
       logout();
     };
