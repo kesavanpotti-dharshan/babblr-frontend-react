@@ -1,5 +1,5 @@
 import React from 'react';
-import { MessageSquare, Hash, Users, ArrowRight, Menu } from 'lucide-react';
+import { MessageSquare, Hash, Users, ArrowRight, Menu, Compass } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useRoomStore } from '../store/useRoomStore';
 import { useRooms } from '../hooks/useRooms';
@@ -8,7 +8,7 @@ import { useUIStore } from '../store/useUIStore';
 export const RoomListPage: React.FC = () => {
   const { rooms } = useRooms();
   const navigate = useNavigate();
-  const { openSidebar } = useUIStore();
+  const { openSidebar, setDiscoverRoomsModalOpen } = useUIStore();
 
   return (
     <div className="flex-1 flex flex-col bg-[#0f172a] overflow-hidden">
@@ -25,13 +25,22 @@ export const RoomListPage: React.FC = () => {
 
       <div className="flex-1 overflow-y-auto custom-scrollbar">
         <div className="p-4 sm:p-6 md:p-10 max-w-6xl mx-auto w-full">
-          <div className="mb-8 md:mb-12">
-            <h1 className="text-3xl md:text-5xl font-bold text-white mb-3 tracking-tight">
-              Welcome back!
-            </h1>
-            <p className="text-slate-400 text-base md:text-xl max-w-2xl">
-              Select a room to start chatting or explore new communities to join.
-            </p>
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 md:mb-12">
+            <div>
+              <h1 className="text-3xl md:text-5xl font-bold text-white mb-3 tracking-tight">
+                Welcome back!
+              </h1>
+              <p className="text-slate-400 text-base md:text-xl max-w-2xl">
+                Select a room to start chatting or explore new communities to join.
+              </p>
+            </div>
+            <button
+              onClick={() => setDiscoverRoomsModalOpen(true)}
+              className="flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold transition-all shadow-lg shadow-indigo-500/20 shrink-0"
+            >
+              <Compass size={20} />
+              Discover Rooms
+            </button>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">

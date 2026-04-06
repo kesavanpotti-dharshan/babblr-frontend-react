@@ -36,12 +36,12 @@ export const DiscoverRoomsModal: React.FC<Props> = ({ isOpen, onClose }) => {
     }
   }, [isOpen]);
 
-  const handleJoin = async (roomId: string) => {
-    setJoiningId(roomId);
+  const handleJoin = async (room: Room) => {
+    setJoiningId(room.id);
     try {
-      await joinRoom(roomId);
+      await joinRoom(room);
       onClose();
-      navigate(`/rooms/${roomId}`);
+      navigate(`/rooms/${room.id}`);
     } catch (err) {
       console.error(err);
     } finally {
@@ -131,18 +131,14 @@ export const DiscoverRoomsModal: React.FC<Props> = ({ isOpen, onClose }) => {
                     <div className="ml-6">
                       {isJoined(room.id) ? (
                         <button
-                          onClick={() => {
-                            onClose();
-                            navigate(`/rooms/${room.id}`);
-                          }}
-                          className="flex items-center gap-2 px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-sm font-bold transition-all border border-slate-700"
+                          disabled
+                          className="flex items-center gap-2 px-8 py-2.5 bg-slate-800 text-slate-500 rounded-xl text-sm font-bold transition-all border border-slate-700 cursor-not-allowed"
                         >
-                          Open
-                          <ArrowRight size={16} />
+                          Joined
                         </button>
                       ) : (
                         <button
-                          onClick={() => handleJoin(room.id)}
+                          onClick={() => handleJoin(room)}
                           disabled={joiningId === room.id}
                           className="flex items-center gap-2 px-8 py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-xl text-sm font-bold transition-all shadow-xl shadow-indigo-500/20"
                         >

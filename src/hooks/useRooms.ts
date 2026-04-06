@@ -3,6 +3,7 @@ import { roomsApi, authApi } from '../services/api';
 import { useRoomStore } from '../store/useRoomStore';
 import { useChatStore } from '../store/useChatStore';
 import { signalRService } from '../services/signalr';
+import { Room } from '../types';
 
 export const useRooms = () => {
   const { rooms, setRooms, setLoading, addRoom } = useRoomStore();
@@ -11,12 +12,8 @@ export const useRooms = () => {
   const fetchRooms = async () => {
     setLoading(true);
     try {
-      const [roomsRes, onlineRes] = await Promise.all([
-        roomsApi.getRooms(),
-        authApi.getOnlineUsers(),
-      ]);
+      const roomsRes = await roomsApi.getRooms();
       setRooms(roomsRes.data);
-      setOnlineUsers(onlineRes.data.onlineUsers);
     } catch (err) {
       console.error('Failed to fetch rooms', err);
     } finally {
@@ -47,12 +44,15 @@ export const useRooms = () => {
     }
   };
 
-  const joinRoom = async (roomId: string) => {
+  const joinRoom = async (room: Room) => {
     try {
-      await roomsApi.joinRoom(roomId);
-      await fetchRooms(); // Refresh the list of joined rooms
+      await roomsApi.joinRoom(room.id);
+      // Add the room to the local rooms list state immediately
+      addRoom(room);
       // Join the SignalR hub for the joined room
-      await signalRService.invoke('JoinRoom', roomId);
+      await signalRService.invoke('JoinRoom', room.id.toString());
+      // Refresh the list of joined rooms to ensure consistency
+      await fetchRooms();
     } catch (err) {
       console.error('Failed to join room', err);
       throw err;

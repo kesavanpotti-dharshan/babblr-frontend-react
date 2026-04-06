@@ -37,6 +37,8 @@ export const authApi = {
   register: (data: any) => api.post<AuthResponse>('/api/auth/register', data),
   login: (data: any) => api.post<AuthResponse>('/api/auth/login', data),
   getMe: () => api.get<User>('/api/users/me'),
+  updateMe: (data: { displayName: string; avatarUrl?: string }) =>
+    api.put<User>('/api/users/me', data),
   getOnlineUsers: () => api.get<OnlineUsersResponse>('/api/users/online'),
 };
 
@@ -55,6 +57,19 @@ export const messagesApi = {
   editMessage: (id: string, content: string) =>
     api.put(`/api/messages/${id}`, { content }),
   deleteMessage: (id: string) => api.delete(`/api/messages/${id}`),
+  searchMessages: (roomId: string, query: string) =>
+    api.get<Message[]>(`/api/messages/room/${roomId}/search`, { params: { q: query } }),
+};
+
+export const uploadsApi = {
+  uploadFile: (file: File, onUploadProgress?: (progressEvent: any) => void) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    return api.post<{ url: string }>('/api/uploads', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      onUploadProgress,
+    });
+  },
 };
 
 export default api;

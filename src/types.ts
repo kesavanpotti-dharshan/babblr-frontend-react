@@ -2,6 +2,7 @@ export interface User {
   userId: string;
   displayName: string;
   email: string;
+  avatarUrl?: string;
   token?: string;
 }
 
@@ -10,6 +11,7 @@ export interface AuthResponse {
   userId: string;
   displayName: string;
   email: string;
+  avatarUrl?: string;
 }
 
 export interface Room {
@@ -25,14 +27,16 @@ export interface Message {
   content: string;
   senderId: string;
   senderName: string;
+  senderAvatarUrl?: string;
   roomId: string;
   sentAt: string;
   editedAt?: string;
+  isEdited?: boolean;
   isDeleted: boolean;
 }
 
 export interface OnlineUsersResponse {
-  onlineUsers: string[];
+  onlineUserIds: string[];
   count: number;
 }
 

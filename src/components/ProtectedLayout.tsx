@@ -5,6 +5,7 @@ import { useUIStore } from '../store/useUIStore';
 import { Sidebar } from './Sidebar';
 import { CreateRoomModal } from './CreateRoomModal';
 import { DiscoverRoomsModal } from './DiscoverRoomsModal';
+import { UserProfileModal } from './UserProfileModal';
 import { AnimatePresence, motion } from 'motion/react';
 
 export const ProtectedLayout: React.FC = () => {
@@ -15,7 +16,9 @@ export const ProtectedLayout: React.FC = () => {
     isCreateRoomModalOpen, 
     setCreateRoomModalOpen,
     isDiscoverRoomsModalOpen,
-    setDiscoverRoomsModalOpen
+    setDiscoverRoomsModalOpen,
+    isUserProfileModalOpen,
+    setUserProfileModalOpen
   } = useUIStore();
   const location = useLocation();
 
@@ -57,6 +60,10 @@ export const ProtectedLayout: React.FC = () => {
       <DiscoverRoomsModal 
         isOpen={isDiscoverRoomsModalOpen} 
         onClose={() => setDiscoverRoomsModalOpen(false)} 
+      />
+      <UserProfileModal
+        isOpen={isUserProfileModalOpen}
+        onClose={() => setUserProfileModalOpen(false)}
       />
     </div>
   );

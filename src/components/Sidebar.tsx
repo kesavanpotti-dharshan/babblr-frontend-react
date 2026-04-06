@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Hash, Plus, LogOut, Users, Search, X } from 'lucide-react';
+import { Hash, Plus, LogOut, Users, Search, X, Activity } from 'lucide-react';
 import { useRoomStore } from '../store/useRoomStore';
 import { useAuthStore } from '../store/useAuthStore';
-import { useChatStore } from '../store/useChatStore';
 import { useUIStore } from '../store/useUIStore';
+import { usePresence } from '../hooks/usePresence';
 import { CreateRoomModal } from './CreateRoomModal';
 import { DiscoverRoomsModal } from './DiscoverRoomsModal';
 import { cn } from '../lib/utils';
@@ -12,8 +12,8 @@ import { cn } from '../lib/utils';
 export const Sidebar: React.FC = () => {
   const { rooms } = useRoomStore();
   const { user, logout } = useAuthStore();
-  const { onlineUsers } = useChatStore();
-  const { isSidebarOpen, closeSidebar, setCreateRoomModalOpen, setDiscoverRoomsModalOpen } = useUIStore();
+  const { onlineCount } = usePresence();
+  const { isSidebarOpen, closeSidebar, setCreateRoomModalOpen, setDiscoverRoomsModalOpen, setUserProfileModalOpen } = useUIStore();
   const { id: currentRoomId } = useParams();
   const navigate = useNavigate();
 
@@ -25,9 +25,9 @@ export const Sidebar: React.FC = () => {
       <div className="p-4 border-b border-slate-700/50 flex items-center justify-between">
         <h1 className="text-xl font-bold text-white tracking-tight">Babblr</h1>
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-2 text-xs text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-full">
-            <div className="w-2 h-2 bg-emerald-400 rounded-full animate-pulse" />
-            <span>{onlineUsers.size} online</span>
+          <div className="flex items-center gap-2 text-xs text-emerald-400 bg-emerald-400/10 px-2 py-1 rounded-full border border-emerald-400/20">
+            <Activity size={12} className="animate-pulse" />
+            <span>{onlineCount} online</span>
           </div>
           <button 
             onClick={closeSidebar}
@@ -81,15 +81,22 @@ export const Sidebar: React.FC = () => {
       </div>
 
       <div className="p-4 bg-[#1a2233] border-t border-slate-700/50">
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold shadow-inner">
-            {user?.displayName?.[0]?.toUpperCase()}
+        <button 
+          onClick={() => setUserProfileModalOpen(true)}
+          className="w-full flex items-center gap-3 mb-3 p-2 rounded-xl hover:bg-slate-700/30 transition-all group"
+        >
+          <div className="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold shadow-inner group-hover:scale-105 transition-transform">
+            {user?.avatarUrl ? (
+              <img src={user.avatarUrl} alt={user.displayName} className="w-full h-full object-cover rounded-full" referrerPolicy="no-referrer" />
+            ) : (
+              user?.displayName?.[0]?.toUpperCase()
+            )}
           </div>
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 text-left">
             <p className="text-sm font-semibold text-white truncate">{user?.displayName}</p>
             <p className="text-xs text-slate-500 truncate">{user?.email}</p>
           </div>
-        </div>
+        </button>
         <button
           onClick={logout}
           className="w-full flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-slate-400 hover:text-rose-400 hover:bg-rose-400/10 rounded-lg transition-all"
