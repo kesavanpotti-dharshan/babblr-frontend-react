@@ -226,14 +226,14 @@ export const ChatRoomPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="flex-1 flex items-center justify-center bg-gray-50 dark:bg-[#0f172a] transition-colors duration-200">
+      <div className="flex-1 flex items-center justify-center bg-white dark:bg-[#0f172a] transition-colors duration-200">
         <Loader2 className="w-10 h-10 text-indigo-500 animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-gray-50 dark:bg-[#0f172a] relative overflow-hidden transition-colors duration-200">
+    <div className="flex-1 flex flex-col h-full bg-white dark:bg-[#0f172a] relative overflow-hidden transition-colors duration-200">
       <header className="h-14 border-b border-gray-200 dark:border-white/5 bg-white dark:bg-[#1e293b]/50 backdrop-blur-xl flex items-center justify-between px-4 z-20 shrink-0 transition-colors duration-200">
         <div className="flex items-center gap-3">
           <button

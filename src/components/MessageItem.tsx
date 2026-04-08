@@ -86,7 +86,7 @@ export const MessageItem: React.FC<Props> = ({
           <div className="flex justify-end gap-2">
             <button 
               onClick={() => setIsEditing(false)} 
-              className="px-3 py-1.5 hover:bg-gray-100 dark:hover:bg-white/5 rounded-lg text-gray-500 dark:text-slate-400 text-xs font-bold transition-colors"
+              className="px-3 py-1.5 hover:bg-gray-200 dark:hover:bg-white/5 rounded-lg text-gray-500 dark:text-slate-400 text-xs font-bold transition-colors"
             >
               Cancel
             </button>
@@ -132,8 +132,10 @@ export const MessageItem: React.FC<Props> = ({
               target="_blank" 
               rel="noopener noreferrer"
               className={cn(
-                "flex items-center gap-3 p-3 border border-gray-200 dark:border-white/5 rounded-xl transition-all group/file",
-                isOwn ? "bg-white/10 hover:bg-white/20" : "bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10"
+                "flex items-center gap-3 p-3 border rounded-xl transition-all group/file",
+                isOwn 
+                  ? "bg-white/10 hover:bg-white/20 border-white/10" 
+                  : "bg-gray-100 dark:bg-white/5 border-gray-200 dark:border-white/10 hover:bg-gray-200 dark:hover:bg-white/10"
               )}
             >
               <div className="w-10 h-10 rounded-lg bg-violet-500/10 flex items-center justify-center text-violet-600 dark:text-violet-400 group-hover/file:bg-violet-500 group-hover/file:text-white transition-all">
@@ -221,7 +223,7 @@ export const MessageItem: React.FC<Props> = ({
               "px-4 py-2.5 rounded-2xl shadow-sm dark:shadow-md relative transition-all duration-200",
               isOwn 
                 ? "bg-gradient-to-br from-violet-600 to-indigo-600 text-white" 
-                : "bg-white dark:bg-gray-800 text-gray-900 dark:text-white/90 border border-gray-200 dark:border-white/5",
+                : "bg-gray-200 dark:bg-gray-800 text-gray-900 dark:text-white/90 border border-gray-200 dark:border-white/5",
               isOwn && isFirstInGroup && "rounded-tr-sm",
               isOwn && !isFirstInGroup && !isLastInGroup && "rounded-r-md",
               isOwn && isLastInGroup && !isFirstInGroup && "rounded-br-sm",
