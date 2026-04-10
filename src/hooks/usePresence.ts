@@ -36,8 +36,8 @@ export const usePresence = () => {
     signalRService.on('UserOffline', handleUserOffline);
 
     return () => {
-      signalRService.off('UserOnline');
-      signalRService.off('UserOffline');
+      signalRService.off('UserOnline', handleUserOnline);
+      signalRService.off('UserOffline', handleUserOffline);
     };
   }, [setOnlineUsers, addUserOnline, removeUserOffline]);
 

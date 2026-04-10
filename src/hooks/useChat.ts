@@ -19,57 +19,67 @@ export const useChat = (roomId?: string) => {
   useEffect(() => {
     if (!roomId) return;
 
+    const handleReceiveMessage = (message: Message) => {
+      addMessage(message.roomId, message);
+    };
+
+    const handleMessageEdited = ({ messageId, newContent, editedAt, roomId: msgRoomId }: any) => {
+      updateMessage(msgRoomId, messageId, newContent, editedAt);
+    };
+
+    const handleMessageDeleted = ({ messageId, roomId: msgRoomId }: any) => {
+      deleteMessage(msgRoomId, messageId);
+    };
+
+    const handleUserJoined = ({ roomId: joinedRoomId }: any) => {
+      updateRoomMemberCount(joinedRoomId, 1);
+    };
+
+    const handleUserLeft = ({ roomId: leftRoomId }: any) => {
+      updateRoomMemberCount(leftRoomId, -1);
+    };
+
+    const handleUserOnline = (userId: string) => {
+      addUserOnline(userId);
+    };
+
+    const handleUserOffline = (userId: string) => {
+      removeUserOffline(userId);
+    };
+
+    const handleUserTyping = ({ userId, roomId: typingRoomId, displayName }: any) => {
+      setUserTyping(typingRoomId, userId, displayName);
+    };
+
+    const handleUserStoppedTyping = ({ userId, roomId: typingRoomId }: any) => {
+      removeUserTyping(typingRoomId, userId);
+    };
+
     signalRService.invoke('JoinRoom', roomId);
 
-    signalRService.on('ReceiveMessage', (message: Message) => {
-      addMessage(message.roomId, message);
-    });
-
-    signalRService.on('MessageEdited', ({ messageId, newContent, editedAt, roomId: msgRoomId }) => {
-      updateMessage(msgRoomId, messageId, newContent, editedAt);
-    });
-
-    signalRService.on('MessageDeleted', ({ messageId, roomId: msgRoomId }) => {
-      deleteMessage(msgRoomId, messageId);
-    });
-
-    signalRService.on('UserJoined', ({ roomId: joinedRoomId }) => {
-      updateRoomMemberCount(joinedRoomId, 1);
-    });
-
-    signalRService.on('UserLeft', ({ roomId: leftRoomId }) => {
-      updateRoomMemberCount(leftRoomId, -1);
-    });
-
-    signalRService.on('UserOnline', (userId: string) => {
-      addUserOnline(userId);
-    });
-
-    signalRService.on('UserOffline', (userId: string) => {
-      removeUserOffline(userId);
-    });
-
-    signalRService.on('UserTyping', ({ userId, roomId: typingRoomId, displayName }) => {
-      setUserTyping(typingRoomId, userId, displayName);
-    });
-
-    signalRService.on('UserStoppedTyping', ({ userId, roomId: typingRoomId }) => {
-      removeUserTyping(typingRoomId, userId);
-    });
+    signalRService.on('ReceiveMessage', handleReceiveMessage);
+    signalRService.on('MessageEdited', handleMessageEdited);
+    signalRService.on('MessageDeleted', handleMessageDeleted);
+    signalRService.on('UserJoined', handleUserJoined);
+    signalRService.on('UserLeft', handleUserLeft);
+    signalRService.on('UserOnline', handleUserOnline);
+    signalRService.on('UserOffline', handleUserOffline);
+    signalRService.on('UserTyping', handleUserTyping);
+    signalRService.on('UserStoppedTyping', handleUserStoppedTyping);
 
     return () => {
       signalRService.invoke('LeaveRoom', roomId);
-      signalRService.off('ReceiveMessage');
-      signalRService.off('MessageEdited');
-      signalRService.off('MessageDeleted');
-      signalRService.off('UserJoined');
-      signalRService.off('UserLeft');
-      signalRService.off('UserOnline');
-      signalRService.off('UserOffline');
-      signalRService.off('UserTyping');
-      signalRService.off('UserStoppedTyping');
+      signalRService.off('ReceiveMessage', handleReceiveMessage);
+      signalRService.off('MessageEdited', handleMessageEdited);
+      signalRService.off('MessageDeleted', handleMessageDeleted);
+      signalRService.off('UserJoined', handleUserJoined);
+      signalRService.off('UserLeft', handleUserLeft);
+      signalRService.off('UserOnline', handleUserOnline);
+      signalRService.off('UserOffline', handleUserOffline);
+      signalRService.off('UserTyping', handleUserTyping);
+      signalRService.off('UserStoppedTyping', handleUserStoppedTyping);
     };
-  }, [roomId]);
+  }, [roomId, addMessage, updateMessage, deleteMessage, updateRoomMemberCount, addUserOnline, removeUserOffline, setUserTyping, removeUserTyping]);
 
   const sendMessage = async (content: string) => {
     if (!roomId) return;

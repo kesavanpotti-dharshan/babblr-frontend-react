@@ -6,6 +6,8 @@ class SignalRService {
   private connection: HubConnection | null = null;
   private token: string | null = null;
 
+  private transportRetries = 0;
+
   async startConnection(token: string) {
     if (this.connection) {
       if (this.connection.state === HubConnectionState.Connected) return;
@@ -13,30 +15,53 @@ class SignalRService {
     }
 
     this.token = token;
+    
+    // If we've had multiple failures, try forcing Long Polling
+    const transport = this.transportRetries > 2 
+      ? HttpTransportType.LongPolling 
+      : HttpTransportType.WebSockets | HttpTransportType.LongPolling;
+
+    if (this.transportRetries > 2) {
+      console.warn('SignalR: Forcing Long Polling due to repeated connection issues.');
+    }
+
     this.connection = new HubConnectionBuilder()
       .withUrl(`${API_URL}/hubs/chat`, {
         accessTokenFactory: () => this.token || '',
         skipNegotiation: false,
-        transport: HttpTransportType.WebSockets | HttpTransportType.LongPolling
+        transport: transport
       })
       .withAutomaticReconnect({
         nextRetryDelayInMilliseconds: retryContext => {
-          if (retryContext.elapsedMilliseconds < 60000) {
-            return 2000;
+          // Reconnect more aggressively at first
+          if (retryContext.elapsedMilliseconds < 30000) {
+            return 1000;
+          } else if (retryContext.elapsedMilliseconds < 120000) {
+            return 5000;
           } else {
-            return 10000;
+            return 30000;
           }
         }
       })
-      .configureLogging(LogLevel.Information)
+      .configureLogging(LogLevel.Warning) // Reduce noise but keep warnings/errors
       .build();
 
-    // Increase timeouts to be more resilient to network jitter
-    this.connection.serverTimeoutInMilliseconds = 60000; // 60 seconds (default is 30)
-    this.connection.keepAliveIntervalInMilliseconds = 15000; // 15 seconds (default is 15)
+    // Re-attach all registered handlers to the new connection
+    Object.keys(this.handlers).forEach(eventName => {
+      this.connection?.on(eventName, (...args: any[]) => {
+        this.handlers[eventName].forEach(handler => handler(...args));
+      });
+    });
+
+    // Adjust timeouts to be more aggressive with keep-alives to prevent proxy timeouts
+    this.connection.serverTimeoutInMilliseconds = 30000; // 30 seconds
+    this.connection.keepAliveIntervalInMilliseconds = 10000; // 10 seconds
 
     this.connection.onclose((error) => {
       console.error('SignalR Connection closed: ', error);
+      if (error) {
+        this.transportRetries++;
+      }
       if (this.token) {
         console.log('Attempting to restart SignalR connection...');
         setTimeout(() => this.startConnection(this.token!), 5000);
@@ -54,8 +79,10 @@ class SignalRService {
     try {
       await this.connection.start();
       console.log('SignalR Connected');
+      this.transportRetries = 0; // Reset on success
     } catch (err) {
       console.error('SignalR Connection Error: ', err);
+      this.transportRetries++; // Increment on failure
       if (this.token) {
         setTimeout(() => this.startConnection(this.token!), 5000);
       }
@@ -75,16 +102,34 @@ class SignalRService {
     }
   }
 
+  private handlers: Record<string, ((...args: any[]) => void)[]> = {};
+
   on(eventName: string, callback: (...args: any[]) => void) {
-    if (!this.connection) {
-      console.warn(`Cannot register listener for ${eventName}: connection not initialized`);
-      return;
+    if (!this.handlers[eventName]) {
+      this.handlers[eventName] = [];
+      // Only register the actual SignalR listener once
+      this.connection?.on(eventName, (...args: any[]) => {
+        this.handlers[eventName].forEach(handler => handler(...args));
+      });
     }
-    this.connection.on(eventName, callback);
+    this.handlers[eventName].push(callback);
   }
 
-  off(eventName: string) {
-    this.connection?.off(eventName);
+  off(eventName: string, callback?: (...args: any[]) => void) {
+    if (!this.handlers[eventName]) return;
+
+    if (callback) {
+      this.handlers[eventName] = this.handlers[eventName].filter(h => h !== callback);
+    } else {
+      this.handlers[eventName] = [];
+    }
+
+    // If no more handlers, we could potentially call this.connection.off(eventName)
+    // but it's safer to just keep the wrapper and let it call an empty array
+    if (this.handlers[eventName].length === 0) {
+      this.connection?.off(eventName);
+      delete this.handlers[eventName];
+    }
   }
 
   async invoke(methodName: string, ...args: any[]) {
