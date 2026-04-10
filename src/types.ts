@@ -46,3 +46,16 @@ export interface TypingIndicator {
   roomId: string;
   displayName: string;
 }
+
+export interface Pagination {
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  totalPages: number;
+  hasMore: boolean;
+}
+
+export interface PaginatedMessages {
+  messages: Message[];
+  pagination: Pagination;
+}

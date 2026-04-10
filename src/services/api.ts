@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { AuthResponse, Message, OnlineUsersResponse, Room, User } from '../types';
+import { AuthResponse, Message, OnlineUsersResponse, Room, User, PaginatedMessages } from '../types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5174';
 
@@ -67,7 +67,7 @@ export const roomsApi = {
 
 export const messagesApi = {
   getRoomMessages: (roomId: string, page = 1, pageSize = 20) =>
-    api.get<Message[]>(`/api/messages/room/${roomId}`, { params: { page, pageSize } }),
+    api.get<PaginatedMessages>(`/api/messages/room/${roomId}`, { params: { page, pageSize } }),
   editMessage: (id: string, content: string) =>
     api.put(`/api/messages/${id}`, { content }),
   deleteMessage: (id: string) => api.delete(`/api/messages/${id}`),

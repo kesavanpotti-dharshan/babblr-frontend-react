@@ -25,7 +25,8 @@ export const ChatRoomPage: React.FC = () => {
   const [isLeaving, setIsLeaving] = useState(false);
   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
   const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
+  const [hasMore, setHasMore] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   
   // Toast state
   const [toast, setToast] = useState<{ message: string; type: ToastType; isVisible: boolean }>({
@@ -67,9 +68,10 @@ export const ChatRoomPage: React.FC = () => {
           messagesApi.getRoomMessages(id, 1, 20),
         ]);
         setCurrentRoom(roomRes.data);
-        useChatStore.getState().setMessages(id, messagesRes.data.reverse());
+        const data = messagesRes.data;
+        useChatStore.getState().setMessages(id, data.messages.reverse());
         setPage(1);
-        setHasMore(messagesRes.data.length === 20);
+        setHasMore(data.pagination.hasMore);
       } catch (err: any) {
         console.error(err);
         showToast(err.userMessage || 'Failed to load room data', 'error');
@@ -213,16 +215,33 @@ export const ChatRoomPage: React.FC = () => {
   };
 
   const loadMore = async () => {
-    if (!id || !hasMore) return;
+    if (!id || !hasMore || loadingMore) return;
     const nextPage = page + 1;
+    setLoadingMore(true);
+
+    const scrollContainer = scrollRef.current;
+    const previousScrollHeight = scrollContainer?.scrollHeight || 0;
+
     try {
       const res = await messagesApi.getRoomMessages(id, nextPage, 20);
-      if (res.data.length < 20) setHasMore(false);
-      useChatStore.getState().setMessages(id, [...res.data.reverse(), ...messages]);
+      const data = res.data;
+      
+      setHasMore(data.pagination.hasMore);
+      useChatStore.getState().setMessages(id, [...data.messages.reverse(), ...messages]);
       setPage(nextPage);
+
+      // Maintain scroll position
+      setTimeout(() => {
+        if (scrollContainer) {
+          const newScrollHeight = scrollContainer.scrollHeight;
+          scrollContainer.scrollTop = newScrollHeight - previousScrollHeight;
+        }
+      }, 0);
     } catch (err: any) {
       console.error(err);
       showToast(err.userMessage || 'Failed to load more messages', 'error');
+    } finally {
+      setLoadingMore(false);
     }
   };
 
@@ -352,14 +371,21 @@ export const ChatRoomPage: React.FC = () => {
           </div>
         )}
 
-        {hasMore && (
+        {hasMore ? (
           <div className="flex justify-center py-6">
             <button
               onClick={loadMore}
-              className="text-[11px] font-bold text-slate-400 hover:text-white bg-white/5 px-4 py-2 rounded-full border border-white/5 transition-all uppercase tracking-widest"
+              disabled={loadingMore}
+              className="text-sm font-medium text-slate-400 hover:text-white bg-white/10 hover:bg-white/20 px-4 py-1.5 rounded-full transition-all flex items-center gap-2"
             >
-              Load previous messages
+              {loadingMore ? <Loader2 size={14} className="animate-spin" /> : null}
+              {loadingMore ? 'Loading...' : 'Load earlier messages'}
             </button>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center py-10 opacity-20 select-none">
+            <div className="h-px w-12 bg-gray-400 mb-4" />
+            <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-gray-400">Beginning of conversation</span>
           </div>
         )}
         {messages.map((msg, index) => {
