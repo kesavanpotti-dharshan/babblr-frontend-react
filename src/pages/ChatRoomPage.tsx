@@ -70,8 +70,9 @@ export const ChatRoomPage: React.FC = () => {
         useChatStore.getState().setMessages(id, messagesRes.data.reverse());
         setPage(1);
         setHasMore(messagesRes.data.length === 20);
-      } catch (err) {
+      } catch (err: any) {
         console.error(err);
+        showToast(err.userMessage || 'Failed to load room data', 'error');
         navigate('/');
       } finally {
         setIsLoading(false);
@@ -159,9 +160,9 @@ export const ChatRoomPage: React.FC = () => {
       const fileUrl = res.data.url;
       const messageContent = `[File] ${file.name} — ${fileUrl}`;
       await sendMessage(messageContent);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      showToast('Failed to upload file.', 'error');
+      showToast(err.userMessage || 'Failed to upload file.', 'error');
     } finally {
       setIsUploading(false);
       setUploadProgress(0);
@@ -203,9 +204,9 @@ export const ChatRoomPage: React.FC = () => {
     try {
       await leaveRoom(id);
       navigate('/');
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      showToast('Failed to leave room.', 'error');
+      showToast(err.userMessage || 'Failed to leave room.', 'error');
     } finally {
       setIsLeaving(false);
     }
@@ -219,8 +220,9 @@ export const ChatRoomPage: React.FC = () => {
       if (res.data.length < 20) setHasMore(false);
       useChatStore.getState().setMessages(id, [...res.data.reverse(), ...messages]);
       setPage(nextPage);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      showToast(err.userMessage || 'Failed to load more messages', 'error');
     }
   };
 

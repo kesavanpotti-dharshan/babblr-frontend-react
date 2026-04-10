@@ -14,14 +14,28 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Interceptor for 401
+// Interceptor for errors and ProblemDetails
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const status = error.response?.status;
+    const data = error.response?.data;
+
+    if (status === 401) {
       window.dispatchEvent(new CustomEvent('auth-unauthorized'));
     }
-    return Promise.reject(error);
+
+    let message = 'An unexpected error occurred';
+
+    if (status === 500) {
+      message = 'Something went wrong. Please try again.';
+    } else if (status === 404) {
+      message = 'Not found';
+    } else {
+      message = data?.detail || data?.message || data?.title || message;
+    }
+
+    return Promise.reject({ ...error, userMessage: message });
   }
 );
 

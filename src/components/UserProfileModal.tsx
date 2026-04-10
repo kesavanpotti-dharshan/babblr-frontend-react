@@ -38,7 +38,7 @@ export const UserProfileModal: React.FC<Props> = ({ isOpen, onClose }) => {
       setSuccess(true);
       setTimeout(() => setSuccess(false), 3000);
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to update profile');
+      setError(err.userMessage || err.message || 'Failed to update profile');
     } finally {
       setIsLoading(false);
     }

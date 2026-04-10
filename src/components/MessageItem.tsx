@@ -59,8 +59,8 @@ export const MessageItem: React.FC<Props> = ({
       const updatedMessage = response.data as any;
       updateMessage(roomId, message.messageId, editContent, updatedMessage.editedAt || new Date().toISOString());
       setIsEditing(false);
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      console.error('Failed to edit message:', err.userMessage || err.message);
     }
   };
 
@@ -68,8 +68,8 @@ export const MessageItem: React.FC<Props> = ({
     try {
       await messagesApi.deleteMessage(message.messageId);
       localDeleteMessage(roomId, message.messageId);
-    } catch (err) {
-      console.error('Failed to delete message:', err);
+    } catch (err: any) {
+      console.error('Failed to delete message:', err.userMessage || err.message);
     }
   };
 

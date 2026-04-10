@@ -30,7 +30,7 @@ export const CreateRoomModal: React.FC<Props> = ({ isOpen, onClose }) => {
       await createRoom({ name, description, isPrivate });
       handleClose();
     } catch (err: any) {
-      setError(err?.response?.data?.message || 'Failed to create room. Please try again.');
+      setError(err.userMessage || err.message || 'Failed to create room. Please try again.');
     } finally {
       setIsLoading(false);
     }

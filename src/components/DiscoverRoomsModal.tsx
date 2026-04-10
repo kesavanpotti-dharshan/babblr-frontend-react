@@ -16,6 +16,7 @@ export const DiscoverRoomsModal: React.FC<Props> = ({ isOpen, onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [joiningId, setJoiningId] = useState<string | null>(null);
   const [search, setSearch] = useState('');
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const fetchDiscoverable = async () => {
@@ -23,8 +24,9 @@ export const DiscoverRoomsModal: React.FC<Props> = ({ isOpen, onClose }) => {
     try {
       const data = await discoverRooms();
       setAvailableRooms(data);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      setError(err.userMessage || 'Failed to discover rooms');
     } finally {
       setIsLoading(false);
     }
@@ -32,18 +34,21 @@ export const DiscoverRoomsModal: React.FC<Props> = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     if (isOpen) {
+      setError(null);
       fetchDiscoverable();
     }
   }, [isOpen]);
 
   const handleJoin = async (room: Room) => {
     setJoiningId(room.id);
+    setError(null);
     try {
       await joinRoom(room);
       onClose();
       navigate(`/rooms/${room.id}`);
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
+      setError(err.userMessage || 'Failed to join room');
     } finally {
       setJoiningId(null);
     }
@@ -88,6 +93,11 @@ export const DiscoverRoomsModal: React.FC<Props> = ({ isOpen, onClose }) => {
             </div>
 
             <div className="p-4 bg-gray-50 dark:bg-[#0f172a]/50 border-b border-gray-200 dark:border-slate-700 transition-colors duration-200">
+              {error && (
+                <div className="mb-4 p-3 bg-rose-500/10 border border-rose-500/20 rounded-xl text-rose-600 dark:text-rose-400 text-sm font-medium animate-in fade-in slide-in-from-top-1">
+                  {error}
+                </div>
+              )}
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-slate-500" size={18} />
                 <input
